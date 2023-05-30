@@ -51,22 +51,36 @@ def checkTargetAndSL(data):
         print("purchase price=",purchasePrice,"current price=", data["last_price"],"stpLss=",stpLss)
         if(purchasePrice <= currentPrice):
             print("TRAIL stpLss HERE TILL PURCHASE PRICE")
-            collection.update_one({"instrument_token" : 12833794},{"$set":{"stopLoss":purchasePrice}})
+            collection.update_one(
+                {
+                    "indexName" : "BANKNIFTY",
+                    "status": "Active"
+                },
+                {
+                    "$set":{"stopLoss":purchasePrice},
+                    "status":"trailingSL"
+                })
         if (stpLss >= data["last_price"] or target <= data["last_price"]):
             print("EXECUTE SELL ORDER")
-            # orderId = PlaceSellOrderMarketNSE("YESBANK",1)
-            # obj = {
-            #     "orderId":orderId,
-            #     "instrument_token": ,
-            #     "parent_instrument_token": ,
-            #     "indexAt": ,
-            #     "strike": ,
-            #     "indexName": ,
-            #     "price": ,
-            #     "executedAt": ,
-            #     "status": "Closed"
-            # }
-            # collection
+            orderId = PlaceSellOrderMarketNSE("YESBANK",1)
+            orderData = orderHistory(orderId)
+            orderTime = orderData[len(orderData)-1]['order_timestamp'].strftime("%Y-%m-%d %H:%M:%S")
+            obj = {
+                "orderId": orderId,
+                "instrument_token": data["instrument_token"],
+                "qty": 1,
+                "price": orderData[len(orderData)-1]['average_price'],
+                "executedAt": orderTime,
+                "status": "Closed"
+            }
+            collection.update_one({
+                "indexName" : "BANKNIFTY"
+            }, {
+                "$set": {
+                    "sellOrder": obj,
+                    "status": "Closed"
+                    }
+            })
         print(stpLss, target,'sl and targettttttttt')
     return
 
