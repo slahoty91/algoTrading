@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from mongo import *
 from order import placeBuyOrderMarketNSE, orderHistory, PlaceSellOrderMarketNSE
 
@@ -139,7 +139,21 @@ def placeOrder(price, token,type):
             # checkTargetAndSL(token)
         return False
     
-    
+def firstFiveMin(data):
+    current_time = datetime.now().time()
+    start_time = time(9, 15)
+    end_time = time(9, 20)
+    collectionName = db["firstFiveMinData"]
+    if(start_time <= current_time <= end_time):
+        collectionName.insert_one(data)
+    if(current_time == end_time):
+        val = collectionName.find({},{"last_price":1,"_id":0})
+        val = list(val)
+        val.sort()
+        
+        collectionName = db["supportResistanceLevel"]
+        
+    return
 
 def selectStrikePrice(ltp):
         
