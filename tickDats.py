@@ -3,10 +3,10 @@ import datetime
 from mongo import *
 from execOrder import *
 
-accToken = 'oKinQDptUI6N5D1hWpF2sOhgE53ybYUR'
+accToken = 'MhqnY2ziR8Vs8fm9YzgxjOQE6jzbR6jn'
 apiKey = 'k55bdfkr27eqguv6'
-# Temprory adding strike data for sl target function as of now tick data is being automatically being added for strike 
-tokens = [260105, 3050241]
+# Temprory adding strike data for sl target function as of now tick data is being automatically being added for strike  3050241
+tokens = [260105,12831746]
 kws = KiteTicker(apiKey, accToken)
 client = ConnectDB()
 db = client['algoTrading']
@@ -35,10 +35,10 @@ def on_ticks(ws, ticks,counter = 0):
         # and condition is temprory removve it after including time condition
         if(isorderPlaced != False and len(tokens) == 1 and isorderPlaced != None):
             print('hiii if condition satisfied')
-            # tokens.append(isorderPlaced)
-            # print(tokens,'inside ifffffffffffff')
-            # kws.subscribe(tokens)
-            # kws.set_mode(kws.MODE_LTP,tokens)
+            tokens.append(isorderPlaced)
+            print(tokens,'inside ifffffffffffff')
+            kws.subscribe(tokens)
+            kws.set_mode(kws.MODE_LTP,tokens)
         
         
 
